@@ -10,8 +10,8 @@ var i = 0;
 
 // Configure the bot
 var client = new irc.Client(Common.config.server, Common.config.nick, {
-    userName: Common.config.userName,
-    realName: Common.config.realName,
+    // userName: Common.config.userName,
+    // realName: Common.config.realName,
     port: Common.config.port,
     debug: false,
     showErrors: true,
@@ -66,10 +66,10 @@ for (i = 0; i < Common.config.feeds.length; i += 1) {
     setInterval(feedParser.checkFeed, Common.config.feeds[i].t * 1000, client, i);
 }
 
-// Hello world web server
-require('http').createServer(function (request, response) {
-    'use strict';
-    response.writeHead(200, {'Content-Type': 'text/plain'});
-    response.write('hello, world');
-    response.end();
-}).listen(80);
+// // Hello world web server
+// require('http').createServer(function (request, response) {
+//     'use strict';
+//     response.writeHead(200, {'Content-Type': 'text/plain'});
+//     response.write('hello, world');
+//     response.end();
+// }).listen(80);

@@ -63,32 +63,38 @@ function parse(cl, f, body) {
         if (tag === 'title') { inTitle = false; }
         if (tag === 'pubDate' || tag === 'dc:date') { inDate = false; }
     };
-    parser.write(body).close();
-    // Done parsing feeds, now see if we have any new ones to post.
-    for (c = 0; c < Common.config.feeds[f].items.length; c += 1) {
-        // Convert dc:date to pubDate if needed
-        if (Common.config.feeds[f].items[c].date.substr(0, 1) === '2') {
-            Common.config.feeds[f].items[c].date =
-                require('./dateUtils.js').dcToPub(Common.config.feeds[f].items[c].date);
-        }
-        // If item date is newer than newest date, add to newItems list.
-        if (require('./dateUtils.js').dateIsNewer(Common.config.feeds[f].newestDate,
-                Common.config.feeds[f].items[c].date)) {
-            newItems[n] = Common.config.feeds[f].items[c]; n += 1;
-        }
-    } c = 0;
-    //console.log(feed.items);
-    for (c = newItems.length - 1; c >= 0; c -= 1) {
-        if (!Common.config.feeds[f].firstTime) {
-            for (ch = 0; ch < cl.opt.channels.length; ch += 1) {
-                cl.say(cl.opt.channels[ch], '\u0003' + Common.config.feeds[f].c + Common.config.feeds[f].name +
-                    '\u000f: ' + newItems[c].title + ' <\u000315' + newItems[c].link + '\u000f>');
+    parser.onend = function () {
+      // parser stream is done, and ready to have more stuff written to it.
+        // Done parsing feeds, now see if we have any new ones to post.
+        for (c = 0; c < Common.config.feeds[f].items.length; c += 1) {
+            // Convert dc:date to pubDate if needed
+            if (Common.config.feeds[f].items[c].date.substr(0, 1) === '2') {
+                Common.config.feeds[f].items[c].date =
+                    require('./dateUtils.js').dcToPub(Common.config.feeds[f].items[c].date);
+            }
+            // If item date is newer than newest date, add to newItems list.
+            if (require('./dateUtils.js').dateIsNewer(Common.config.feeds[f].newestDate,
+                    Common.config.feeds[f].items[c].date)) {
+                newItems[n] = Common.config.feeds[f].items[c]; n += 1;
+            }
+        } c = 0;
+        //console.log(feed.items);
+        for (c = newItems.length - 1; c >= 0; c -= 1) {
+            console.log(cl.opt.channels[ch], '\u0003' + Common.config.feeds[f].c + Common.config.feeds[f].name +
+                        '\u000f: ' + newItems[c].title + ' <\u000315' + newItems[c].link + '\u000f>');
+            if (!Common.config.feeds[f].firstTime) {
+                for (ch = 0; ch < cl.opt.channels.length; ch += 1) {
+                    cl.say(cl.opt.channels[ch], '\u0003' + Common.config.feeds[f].c + Common.config.feeds[f].name +
+                        '\u000f: ' + newItems[c].title + ' <\u000315' + newItems[c].link + '\u000f>');
+                }
+            }
+            if (require('./dateUtils.js').dateIsNewer(Common.config.feeds[f].newestDate, newItems[c].date)) {
+                Common.config.feeds[f].newestDate = newItems[c].date;
             }
         }
-        if (require('./dateUtils.js').dateIsNewer(Common.config.feeds[f].newestDate, newItems[c].date)) {
-            Common.config.feeds[f].newestDate = newItems[c].date;
-        }
-    }
-    //util.log(Common.config.feeds[f].name + ' newest date: ' + Common.config.feeds[f].newestDate);
-    Common.config.feeds[f].firstTime = false;
+        //util.log(Common.config.feeds[f].name + ' newest date: ' + Common.config.feeds[f].newestDate);
+        Common.config.feeds[f].firstTime = false;
+    };
+
+    parser.write(body).close();
 }

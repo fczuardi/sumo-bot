@@ -1,15 +1,15 @@
 {
-  "nick": "Francoise",
-  "userName": "ed",
-  "realName": "Edward",
-  "server": "irc.freenode.net",
-  "port": 7000,
+  "nick": "sumoptbot",
+  "userName": "sumoptbot",
+  "realName": "Sumo",
+  "server": "irc.mozilla.org",
+  "port": 6697,
   "secure": true,
   "channels": [
-    "#callisto"
+    // change to #mozilla-br once https://bugzilla.mozilla.org/show_bug.cgi?id=913888 is fixed
+    "#fcz-test"
   ],
   "feeds": [
-    {"name": "r/gaming", "url": "http://www.reddit.com/r/gaming/.rss", "c": "12", "t": 1800},
-    {"name": "r/gamedev", "url": "http://www.reddit.com/r/gamedev/.rss", "c": "11", "t": 1800}
+    {"name": "Fórum de Suporte", "url": "http://support.mozilla.org/pt-BR/questions/feed", "c": "14", "t": 900}
   ]
 }
